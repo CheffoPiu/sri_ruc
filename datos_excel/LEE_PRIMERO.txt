@@ -1,0 +1,21 @@
+📁 INSTRUCCIONES PARA SUBIR TUS ARCHIVOS EXCEL
+
+1. Coloca tus archivos Excel (.xlsx o .xls) en esta carpeta (datos_excel/)
+
+2. Formato requerido del Excel:
+   Tu archivo debe tener al menos una de estas columnas:
+   - RUC (o cualquier columna que contenga "ruc" en el nombre)
+   - Nombre/Razón Social (o columnas con "nombre", "razon", "establecimiento")
+   - Dirección (o columnas con "direccion", "ubicacion", "address")
+
+3. El script detectará automáticamente las columnas, aunque tengan nombres ligeramente diferentes.
+
+4. Puedes subir múltiples archivos Excel - el script procesará todos.
+
+5. Ejecuta desde la carpeta principal:
+   python generar_mapa.py
+
+6. El resultado será un mapa interactivo HTML que puedes abrir en tu navegador.
+
+¡Listo! Solo coloca tus archivos Excel aquí y ejecuta el script.
+

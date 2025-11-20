@@ -1,0 +1,24 @@
+# API Keys (NUNCA subir a repositorios públicos)
+google_maps_api_key.txt
+*.key
+*.api_key
+
+# Archivos de resultados
+resultados_*.csv
+resultados_*.json
+mapa_establecimientos.html
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv
+
+# Excel temporales
+~$*.xlsx
+~$*.xls
+
