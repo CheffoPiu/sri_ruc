@@ -43,17 +43,27 @@ class GeneradorMapaFiltrado:
             except Exception as e:
                 print(f"⚠️  Error al configurar Google Maps: {str(e)}")
     
-    def geocodificar_ubicacion(self, provincia: str = None, canton: str = None) -> Optional[Tuple[float, float]]:
-        """Geocodifica usando Google Maps API."""
+    def geocodificar_ubicacion(self, provincia: str = None, canton: str = None, parroquia: str = None) -> Optional[Tuple[float, float]]:
+        """Geocodifica usando Google Maps API con Parroquia + Cantón + Provincia para mayor precisión."""
         if not self.google_client:
             return None
         
-        clave = f"{canton or ''}|{provincia or ''}".strip('|')
+        # Crear clave de cache incluyendo parroquia si está disponible
+        clave = f"{parroquia or ''}|{canton or ''}|{provincia or ''}".strip('|')
         if not clave or clave in self.cache_coordenadas:
             return self.cache_coordenadas.get(clave)
         
         try:
-            query = f"{canton}, {provincia}, Ecuador" if canton and provincia else f"{provincia}, Ecuador"
+            # Construir query con parroquia si está disponible para mayor precisión
+            if parroquia and canton and provincia:
+                query = f"{parroquia}, {canton}, {provincia}, Ecuador"
+            elif canton and provincia:
+                query = f"{canton}, {provincia}, Ecuador"
+            elif provincia:
+                query = f"{provincia}, Ecuador"
+            else:
+                return None
+                
             result = self.google_client.geocode(query)
             
             if result and len(result) > 0:
@@ -149,18 +159,23 @@ class GeneradorMapaFiltrado:
         col_nombre = next((col for col in df.columns if any(x in col.lower() for x in ['razon', 'nombre'])), None)
         col_provincia = next((col for col in df.columns if 'provincia' in col.lower()), None)
         col_canton = next((col for col in df.columns if 'canton' in col.lower()), None)
+        col_parroquia = next((col for col in df.columns if 'parroquia' in col.lower()), None)
         col_ciiu = next((col for col in df.columns if 'ciiu' in col.lower()), None)
         col_actividad = next((col for col in df.columns if 'actividad' in col.lower()), None)
         col_estado = next((col for col in df.columns if 'estado_contribuyente' in col.lower()), None)
         
-        # Agrupar por ubicación
+        # Agrupar por ubicación (usando parroquia si está disponible para mayor precisión)
         grupos = defaultdict(list)
         
         for idx, row in df.iterrows():
             provincia = str(row[col_provincia]).strip() if col_provincia and not pd.isna(row[col_provincia]) else None
             canton = str(row[col_canton]).strip() if col_canton and not pd.isna(row[col_canton]) else None
+            parroquia = str(row[col_parroquia]).strip() if col_parroquia and not pd.isna(row[col_parroquia]) else None
             
-            if canton and provincia:
+            # Crear clave de agrupación: usar parroquia si está disponible para mayor precisión
+            if parroquia and canton and provincia:
+                clave = f"{parroquia}, {canton}, {provincia}"
+            elif canton and provincia:
                 clave = f"{canton}, {provincia}"
             elif provincia:
                 clave = provincia
@@ -172,6 +187,7 @@ class GeneradorMapaFiltrado:
                 'nombre': str(row[col_nombre]) if col_nombre and not pd.isna(row[col_nombre]) else None,
                 'provincia': provincia,
                 'canton': canton,
+                'parroquia': parroquia,
                 'codigo_ciiu': str(row[col_ciiu]) if col_ciiu and not pd.isna(row[col_ciiu]) else None,
                 'actividad': str(row[col_actividad]) if col_actividad and not pd.isna(row[col_actividad]) else None,
                 'estado': str(row[col_estado]).strip() if col_estado and not pd.isna(row[col_estado]) else None
@@ -189,13 +205,16 @@ class GeneradorMapaFiltrado:
             
             provincia = establecimientos[0].get('provincia')
             canton = establecimientos[0].get('canton')
+            parroquia = establecimientos[0].get('parroquia')
             
-            coordenadas = self.geocodificar_ubicacion(provincia, canton)
+            # Geocodificar usando parroquia si está disponible para mayor precisión
+            coordenadas = self.geocodificar_ubicacion(provincia, canton, parroquia)
             
             ubicaciones.append({
                 'ubicacion': clave,
                 'provincia': provincia,
                 'canton': canton,
+                'parroquia': parroquia,
                     'latitud': coordenadas[0] if coordenadas else None,
                     'longitud': coordenadas[1] if coordenadas else None,
                     'cantidad': len(establecimientos),
@@ -279,6 +298,13 @@ class GeneradorMapaFiltrado:
                     'estado': estado_display
                 })
             
+            # Obtener códigos CIIU únicos de esta ubicación
+            codigos_ciiu_unicos = list(set([
+                est.get('codigo_ciiu') 
+                for est in establecimientos_para_tabla 
+                if est.get('codigo_ciiu') and est.get('codigo_ciiu') != 'N/A'
+            ]))
+            
             marcadores_js.append({
                 'lat': ubicacion['latitud'],
                 'lng': ubicacion['longitud'],
@@ -286,7 +312,9 @@ class GeneradorMapaFiltrado:
                 'cantidad': ubicacion['cantidad'],
                 'provincia': ubicacion.get('provincia', 'N/A'),
                 'canton': ubicacion.get('canton', 'N/A'),
+                'parroquia': ubicacion.get('parroquia'),  # Parroquia si está disponible
                 'codigos_ciiu': codigos_texto,
+                'codigos_ciiu_lista': codigos_ciiu_unicos,  # Lista para filtrar
                 'establecimientos': establecimientos_texto,
                 'establecimientos_completos': establecimientos_completos,
                 'color': color,
@@ -295,6 +323,21 @@ class GeneradorMapaFiltrado:
         
         # Obtener lista única de provincias
         provincias_disponibles = sorted(list(set([u.get('provincia') for u in ubicaciones_validas if u.get('provincia')])))
+        
+        # Diccionario de descripciones de códigos CIIU
+        descripciones_ciiu = {
+            'G476101': 'VENTA AL POR MENOR DE LIBROS DE TODO TIPO EN ESTABLECIMIENTOS ESPECIALIZADOS.',
+            'G476102': 'VENTA AL POR MENOR DE PERIÓDICOS EN ESTABLECIMIENTOS ESPECIALIZADOS.',
+            'G476103': 'VENTA AL POR MENOR DE ARTÍCULOS DE OFICINA Y PAPELERÍA COMO LÁPICES, BOLÍGRAFOS, PAPEL, ETCÉTERA, EN ESTABLECIMIENTOS ESPECIALIZADOS.',
+            'G476104': 'VENTA AL POR MENOR DE LIBROS, PERIODICOS, REVISTAS Y ARTICULOS DE PAPELERIA.'
+        }
+        
+        # Obtener lista única de códigos CIIU de todos los marcadores
+        codigos_ciiu_disponibles = set()
+        for marcador in marcadores_js:
+            for codigo in marcador.get('codigos_ciiu_lista', []):
+                codigos_ciiu_disponibles.add(codigo)
+        codigos_ciiu_disponibles = sorted(list(codigos_ciiu_disponibles))
         
         # Obtener lista única de estados de todos los establecimientos
         estados_disponibles = set()
@@ -311,6 +354,27 @@ class GeneradorMapaFiltrado:
                     else:
                         estados_disponibles.add(estado)
         estados_disponibles = sorted(list(estados_disponibles))
+        
+        # Generar HTML del filtro de CIIU
+        html_filtro_ciiu = ''
+        if codigos_ciiu_disponibles:
+            ciiu_checkboxes = []
+            for codigo in codigos_ciiu_disponibles:
+                if codigo in descripciones_ciiu:
+                    descripcion = descripciones_ciiu[codigo]
+                    descripcion_corta = descripcion[:50] + '...' if len(descripcion) > 50 else descripcion
+                    ciiu_checkboxes.append(f'''
+                <div class="checkbox-provincia activa" data-ciiu="{codigo}" title="{descripcion}" style="min-width: 200px; max-width: 280px;">
+                    <input type="checkbox" id="ciiu_{codigo}" checked onchange="aplicarFiltros()">
+                    <label for="ciiu_{codigo}"><strong>{codigo}</strong><span style="font-size: 11px; opacity: 0.9; display: block; margin-top: 2px;">{descripcion_corta}</span></label>
+                </div>''')
+            html_filtro_ciiu = f'''
+        <div class="filtro-izquierda" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2);">
+            <h3 style="color: white; margin: 0 0 8px 0; font-size: 13px;">📋 Códigos CIIU:</h3>
+            <div class="filtro-provincias">
+                {''.join(ciiu_checkboxes)}
+            </div>
+        </div>'''
         
         # Generar HTML
         html_template = f"""<!DOCTYPE html>
@@ -648,6 +712,18 @@ class GeneradorMapaFiltrado:
             font-size: 13px;
             color: #333;
             margin: 0;
+            line-height: 1.4;
+        }}
+        
+        .checkbox-provincia label strong {{
+            display: block;
+            margin-bottom: 2px;
+        }}
+        
+        .checkbox-provincia label span {{
+            display: block;
+            font-weight: normal;
+            font-size: 11px;
         }}
         
         .checkbox-provincia.activa {{
@@ -700,7 +776,7 @@ class GeneradorMapaFiltrado:
                 <div class="filtro-provincias">
                     {''.join([f'''
                     <div class="checkbox-provincia activa" data-provincia="{prov}">
-                        <input type="checkbox" id="prov_{prov.replace(' ', '_')}" checked onchange="toggleProvincia('{prov}')">
+                        <input type="checkbox" id="prov_{prov.replace(' ', '_')}" checked onchange="aplicarFiltros()">
                         <label for="prov_{prov.replace(' ', '_')}">{prov}</label>
                     </div>''' for prov in provincias_disponibles])}
                 </div>
@@ -710,6 +786,7 @@ class GeneradorMapaFiltrado:
                 <button class="btn-filtro" onclick="deseleccionarTodas()">❌ Ninguna</button>
             </div>
         </div>
+        {html_filtro_ciiu}
     </div>
     
     <div id="map"></div>
@@ -737,6 +814,7 @@ class GeneradorMapaFiltrado:
         let map;
         let todosLosMarcadores = [];
         let marcadoresVisibles = [];
+        let marcadorTablaActual = null; // Guardar referencia al marcador de la tabla abierta
         const provinciasDisponibles = {json.dumps(provincias_disponibles)};
         
         function initMap() {{
@@ -760,7 +838,15 @@ class GeneradorMapaFiltrado:
                         url: marcador.icon_url,
                         scaledSize: new google.maps.Size(32, 32)
                     }},
-                    provincia: marcador.provincia
+                    provincia: marcador.provincia,
+                    codigos_ciiu_lista: marcador.codigos_ciiu_lista || [],
+                    titulo: marcador.titulo,
+                    cantidad: marcador.cantidad,
+                    canton: marcador.canton,
+                    parroquia: marcador.parroquia || null,
+                    codigos_ciiu: marcador.codigos_ciiu,
+                    establecimientos: marcador.establecimientos,
+                    establecimientos_completos: marcador.establecimientos_completos
                 }});
                 
                 const infoWindow = new google.maps.InfoWindow({{
@@ -770,6 +856,7 @@ class GeneradorMapaFiltrado:
                             <p><strong>📍 Establecimientos:</strong> ${{marcador.cantidad.toLocaleString()}}</p>
                             <p><strong>Provincia:</strong> ${{marcador.provincia}}</p>
                             <p><strong>Cantón:</strong> ${{marcador.canton}}</p>
+                            ${{marcador.parroquia ? `<p><strong>Parroquia:</strong> ${{marcador.parroquia}}</p>` : ''}}
                             <p><strong>Códigos CIIU:</strong> ${{marcador.codigos_ciiu}}</p>
                             <hr>
                             <p><strong>Ejemplos:</strong></p>
@@ -790,85 +877,178 @@ class GeneradorMapaFiltrado:
             actualizarEstadisticas();
         }}
         
-        function toggleProvincia(provincia) {{
-            const checkbox = document.getElementById('prov_' + provincia.replace(' ', '_'));
-            const div = checkbox.closest('.checkbox-provincia');
+        function aplicarFiltros() {{
+            // Obtener provincias seleccionadas
+            const provinciasSeleccionadas = [];
+            provinciasDisponibles.forEach(prov => {{
+                const checkbox = document.getElementById('prov_' + prov.replace(' ', '_'));
+                const div = checkbox.closest('.checkbox-provincia');
+                if (checkbox && checkbox.checked) {{
+                    provinciasSeleccionadas.push(prov);
+                    div.classList.add('activa');
+                }} else if (div) {{
+                    div.classList.remove('activa');
+                }}
+            }});
             
-            if (checkbox.checked) {{
-                div.classList.add('activa');
-                mostrarProvincia(provincia);
-            }} else {{
-                div.classList.remove('activa');
-                ocultarProvincia(provincia);
-            }}
+            // Obtener códigos CIIU seleccionados
+            const codigosCIIUSeleccionados = [];
+            const checkboxesCIIU = document.querySelectorAll('[data-ciiu] input[type="checkbox"]');
+            checkboxesCIIU.forEach(checkbox => {{
+                const div = checkbox.closest('.checkbox-provincia');
+                if (checkbox.checked) {{
+                    const codigo = div.getAttribute('data-ciiu');
+                    codigosCIIUSeleccionados.push(codigo);
+                    div.classList.add('activa');
+                }} else if (div) {{
+                    div.classList.remove('activa');
+                }}
+            }});
             
-            actualizarEstadisticas();
-        }}
-        
-        function mostrarProvincia(provincia) {{
+            // Ocultar todos los marcadores primero
             todosLosMarcadores.forEach(marker => {{
-                if (marker.provincia === provincia && !marcadoresVisibles.includes(marker)) {{
+                marker.setMap(null);
+            }});
+            
+            // Mostrar solo los que cumplen los filtros
+            marcadoresVisibles = [];
+            todosLosMarcadores.forEach(marker => {{
+                // Verificar provincia
+                const provinciaVisible = provinciasSeleccionadas.length === 0 || provinciasSeleccionadas.includes(marker.provincia);
+                
+                // Verificar CIIU
+                // Si no hay códigos CIIU seleccionados, no mostrar nada
+                let ciiuVisible = false;
+                if (codigosCIIUSeleccionados.length > 0) {{
+                    const codigosMarcador = marker.codigos_ciiu_lista || [];
+                    // Verificar si el marcador tiene al menos uno de los códigos CIIU seleccionados
+                    ciiuVisible = codigosMarcador.some(codigo => codigosCIIUSeleccionados.includes(codigo));
+                }}
+                
+                if (provinciaVisible && ciiuVisible) {{
                     marker.setMap(map);
                     marcadoresVisibles.push(marker);
                 }}
             }});
-        }}
-        
-        function ocultarProvincia(provincia) {{
-            todosLosMarcadores.forEach((marker, index) => {{
-                if (marker.provincia === provincia) {{
-                    marker.setMap(null);
-                    const idx = marcadoresVisibles.indexOf(marker);
-                    if (idx > -1) {{
-                        marcadoresVisibles.splice(idx, 1);
-                    }}
-                }}
-            }});
+            
+            actualizarEstadisticas();
+            
+            // Si hay una tabla abierta, actualizarla con los nuevos filtros
+            if (marcadorTablaActual) {{
+                mostrarTablaDetalle(marcadorTablaActual);
+            }}
         }}
         
         function seleccionarTodas() {{
             provinciasDisponibles.forEach(prov => {{
                 const checkbox = document.getElementById('prov_' + prov.replace(' ', '_'));
-                if (!checkbox.checked) {{
+                if (checkbox && !checkbox.checked) {{
                     checkbox.checked = true;
-                    toggleProvincia(prov);
                 }}
             }});
+            
+            // Seleccionar todos los CIIU también
+            const checkboxesCIIU = document.querySelectorAll('[data-ciiu] input[type="checkbox"]');
+            checkboxesCIIU.forEach(checkbox => {{
+                if (!checkbox.checked) {{
+                    checkbox.checked = true;
+                }}
+            }});
+            
+            aplicarFiltros();
         }}
         
         function deseleccionarTodas() {{
             provinciasDisponibles.forEach(prov => {{
                 const checkbox = document.getElementById('prov_' + prov.replace(' ', '_'));
-                if (checkbox.checked) {{
+                if (checkbox && checkbox.checked) {{
                     checkbox.checked = false;
-                    toggleProvincia(prov);
                 }}
             }});
+            
+            // Deseleccionar todos los CIIU también
+            const checkboxesCIIU = document.querySelectorAll('[data-ciiu] input[type="checkbox"]');
+            checkboxesCIIU.forEach(checkbox => {{
+                if (checkbox.checked) {{
+                    checkbox.checked = false;
+                }}
+            }});
+            
+            aplicarFiltros();
         }}
         
         function actualizarEstadisticas() {{
+            // Obtener códigos CIIU seleccionados
+            const codigosCIIUSeleccionados = [];
+            const checkboxesCIIU = document.querySelectorAll('[data-ciiu] input[type="checkbox"]');
+            checkboxesCIIU.forEach(checkbox => {{
+                if (checkbox.checked) {{
+                    const div = checkbox.closest('.checkbox-provincia');
+                    const codigo = div.getAttribute('data-ciiu');
+                    codigosCIIUSeleccionados.push(codigo);
+                }}
+            }});
+            
+            // Contar ubicaciones (marcadores visibles)
             const ubicaciones = marcadoresVisibles.length;
-            const establecimientos = todosLosMarcadores
-                .filter(m => marcadoresVisibles.includes(m))
-                .reduce((sum, m) => {{
-                    const cantidad = parseInt(m.title.match(/(\d{{1,3}}(?:,\d{{3}})*)/)?.[1]?.replace(/,/g, '') || '0');
-                    return sum + cantidad;
-                }}, 0);
+            
+            // Contar establecimientos que coinciden con los códigos CIIU seleccionados
+            let establecimientos = 0;
+            marcadoresVisibles.forEach(marker => {{
+                const establecimientosCompletos = marker.establecimientos_completos || [];
+                if (codigosCIIUSeleccionados.length > 0) {{
+                    // Filtrar establecimientos por código CIIU seleccionado
+                    const establecimientosFiltrados = establecimientosCompletos.filter(est => {{
+                        const codigoCIIU = est.codigo_ciiu || '';
+                        return codigosCIIUSeleccionados.includes(codigoCIIU);
+                    }});
+                    establecimientos += establecimientosFiltrados.length;
+                }} else {{
+                    // Si no hay códigos seleccionados, no contar nada
+                    establecimientos += 0;
+                }}
+            }});
             
             document.querySelector('.stat-item .number').textContent = ubicaciones;
             document.querySelectorAll('.stat-item .number')[1].textContent = establecimientos.toLocaleString();
         }}
         
         function mostrarTablaDetalle(marcador) {{
+            // Guardar referencia al marcador actual
+            marcadorTablaActual = marcador;
+            
             const tablaDetalle = document.getElementById('tabla-detalle');
             const tituloTabla = document.getElementById('titulo-tabla');
             const contenidoTabla = document.getElementById('contenido-tabla');
             
             tituloTabla.textContent = `Detalle de Establecimientos - ${{marcador.titulo}}`;
             
-            // Obtener estados únicos de los establecimientos
+            // Obtener códigos CIIU seleccionados del header
+            const codigosCIIUSeleccionados = [];
+            const checkboxesCIIU = document.querySelectorAll('[data-ciiu] input[type="checkbox"]');
+            checkboxesCIIU.forEach(checkbox => {{
+                if (checkbox.checked) {{
+                    const div = checkbox.closest('.checkbox-provincia');
+                    const codigo = div.getAttribute('data-ciiu');
+                    codigosCIIUSeleccionados.push(codigo);
+                }}
+            }});
+            
+            // Filtrar establecimientos por código CIIU seleccionado
+            let establecimientosParaMostrar = marcador.establecimientos_completos || [];
+            if (codigosCIIUSeleccionados.length > 0) {{
+                establecimientosParaMostrar = establecimientosParaMostrar.filter(est => {{
+                    const codigoCIIU = est.codigo_ciiu || '';
+                    return codigosCIIUSeleccionados.includes(codigoCIIU);
+                }});
+            }} else {{
+                // Si no hay códigos seleccionados, no mostrar nada
+                establecimientosParaMostrar = [];
+            }}
+            
+            // Obtener estados únicos de los establecimientos filtrados
             const estadosEnTabla = new Set();
-            marcador.establecimientos_completos.forEach(est => {{
+            establecimientosParaMostrar.forEach(est => {{
                 const estado = est.estado || 'N/A';
                 if (estado !== 'N/A') {{
                     const estadoUpper = estado.toUpperCase().trim();
@@ -907,16 +1087,22 @@ class GeneradorMapaFiltrado:
                 </div>`;
             }}
             
-            // Guardar el total original para referencia
+            // Guardar el total original y el filtrado
             const totalOriginal = marcador.cantidad;
+            const totalFiltrado = establecimientosParaMostrar.length;
+            const mostrarFiltrado = codigosCIIUSeleccionados.length > 0 && totalFiltrado < totalOriginal;
+            
+            // Obtener códigos CIIU únicos de los establecimientos filtrados
+            const codigosCIIUFiltrados = [...new Set(establecimientosParaMostrar.map(est => est.codigo_ciiu).filter(c => c && c !== 'N/A'))].join(', ');
             
             let html = `
                 <div class="info-ubicacion">
                     <p><strong>📍 Ubicación:</strong> ${{marcador.titulo}}</p>
                     <p><strong>Provincia:</strong> ${{marcador.provincia}}</p>
                     <p><strong>Cantón:</strong> ${{marcador.canton}}</p>
-                    <p><strong>Total Establecimientos:</strong> <span id="contador-establecimientos">${{totalOriginal.toLocaleString()}}</span> <span id="contador-filtrado" style="color: #667eea; font-weight: normal;"></span></p>
-                    <p><strong>Códigos CIIU:</strong> ${{marcador.codigos_ciiu}}</p>
+                    ${{marcador.parroquia ? `<p><strong>Parroquia:</strong> ${{marcador.parroquia}}</p>` : ''}}
+                    <p><strong>Total Establecimientos:</strong> <span id="contador-establecimientos">${{totalFiltrado.toLocaleString()}}</span>${{mostrarFiltrado ? ` <span id="contador-filtrado" style="color: #667eea; font-weight: normal;">(de ${{totalOriginal.toLocaleString()}} total)</span>` : ''}}</p>
+                    <p><strong>Códigos CIIU:</strong> ${{codigosCIIUFiltrados || marcador.codigos_ciiu}}</p>
                 </div>
                 ${{filtroEstadosHtml}}
                 <table class="tabla-establecimientos">
@@ -932,7 +1118,7 @@ class GeneradorMapaFiltrado:
                     <tbody>
             `;
             
-            marcador.establecimientos_completos.forEach(est => {{
+            establecimientosParaMostrar.forEach(est => {{
                 // Determinar color del estado
                 const estado = est.estado || 'N/A';
                 let estadoClass = '';
@@ -1036,6 +1222,7 @@ class GeneradorMapaFiltrado:
         function cerrarTabla() {{
             const tablaDetalle = document.getElementById('tabla-detalle');
             tablaDetalle.classList.remove('visible');
+            marcadorTablaActual = null; // Limpiar referencia
         }}
         
         // Función global para llamar desde el popup
