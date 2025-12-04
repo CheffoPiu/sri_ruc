@@ -1,0 +1,98 @@
+======================================================================
+📚 REPORTE DE ANÁLISIS DE LIBRERÍAS
+Códigos CIIU: G476101 y G476104
+======================================================================
+
+📊 RESUMEN GENERAL
+----------------------------------------------------------------------
+Total de establecimientos: 260
+Librerías activas: 62
+Librerías suspendidas: 143
+Librerías pasivas: 55
+Con nombre fantasia: 129
+Agentes de retención: 227
+
+📋 DISTRIBUCIÓN POR CÓDIGO CIIU
+----------------------------------------------------------------------
+
+G476101: 255 establecimientos (98.08%)
+  Descripción: VENTA AL POR MENOR DE LIBROS DE TODO TIPO EN ESTABLECIMIENTOS ESPECIALIZADOS.
+
+G476104: 5 establecimientos (1.92%)
+  Descripción: VENTA AL POR MENOR DE LIBROS, PERIODICOS, REVISTAS Y ARTICULOS DE PAPELERIA.
+
+📊 DISTRIBUCIÓN POR ESTADO
+----------------------------------------------------------------------
+SUSPENDIDO: 143 (55.0%)
+ACTIVO: 62 (23.8%)
+PASIVO: 55 (21.2%)
+
+🗺️  DISTRIBUCIÓN POR PROVINCIA
+----------------------------------------------------------------------
+EL ORO: 219 (84.2%)
+GALAPAGOS: 14 (5.4%)
+GUAYAS: 10 (3.8%)
+PICHINCHA: 7 (2.7%)
+TUNGURAHUA: 3 (1.2%)
+AZUAY: 3 (1.2%)
+LOJA: 2 (0.8%)
+MORONA SANTIAGO: 1 (0.4%)
+MANABI: 1 (0.4%)
+
+🏙️  TOP 10 CANTONES
+----------------------------------------------------------------------
+MACHALA: 140
+PASAJE: 41
+SANTA ROSA: 11
+HUAQUILLAS: 10
+GUAYAQUIL: 9
+SANTA CRUZ: 8
+QUITO: 7
+ARENILLAS: 7
+EL GUABO: 5
+SAN CRISTOBAL: 4
+
+🔍 ANÁLISIS DE PALABRAS CLAVE EN NOMBRES
+----------------------------------------------------------------------
+'libreria': 2 (0.8%)
+'librería': 1 (0.4%)
+
+📊 FUENTES DE DATOS PARA ESTIMAR VENTAS:
+
+1. 📋 DATOS DEL SRI (Servicio de Rentas Internas):
+   • Consultar declaraciones de IVA (Formulario 104)
+   • Verificar facturación mensual/anual
+   • Revisar retenciones en la fuente
+   • Portal: https://srienlinea.sri.gob.ec/
+
+2. 🏢 REGISTRO MERCANTIL:
+   • Información financiera de empresas
+   • Estados financieros anuales
+   • Portal: https://www.registromercantil.gob.ec/
+
+3. 📱 ENCUESTAS DIRECTAS:
+   • Contactar librerías por teléfono/email
+   • Usar los RUCs para buscar información de contacto
+   • Preguntar sobre volumen de ventas estimado
+
+4. 🛒 PLATAFORMAS DE VENTA ONLINE:
+   • Buscar librerías en Google Maps
+   • Revisar reseñas y actividad en redes sociales
+   • Verificar si tienen tienda online
+
+5. 📈 ESTIMACIONES POR INDICADORES:
+   • Tamaño del establecimiento (si hay datos de superficie)
+   • Ubicación (centros comerciales = más ventas)
+   • Estado del contribuyente (ACTIVO = operando)
+   • Agente de retención (indica mayor volumen)
+
+6. 📚 ASOCIACIONES Y GREMIOS:
+   • Cámara de Comercio de Ecuador
+   • Asociaciones de libreros
+   • Solicitar datos agregados del sector
+
+7. 🔍 VERIFICACIÓN DE LIBRERÍAS REALES:
+   • Buscar nombres en Google Maps
+   • Verificar si tienen presencia online
+   • Revisar si el nombre contiene palabras clave de librería
+   • Comparar con directorios comerciales

@@ -1,0 +1,133 @@
+
+================================================================================
+📚 RESUMEN EJECUTIVO - ANÁLISIS DE LIBRERÍAS
+Códigos CIIU: G476101 y G476104
+Fecha: 03/12/2025 22:08
+================================================================================
+
+📊 DATOS GENERALES
+--------------------------------------------------------------------------------
+Total de librerías analizadas: 62
+Librerías encontradas en Google Maps: 58 (93.5%)
+Librerías no encontradas: 4
+
+📈 ESTADÍSTICAS DE GOOGLE MAPS
+--------------------------------------------------------------------------------
+Total de reseñas: 4,104
+Promedio de reseñas por librería: 70.8
+Calificación promedio: 4.24 ⭐
+
+💰 ESTIMACIONES DE VENTAS
+--------------------------------------------------------------------------------
+Venta total mensual estimada: $2,756,700.00 USD
+Venta total anual estimada: $33,080,400.00 USD
+
+📍 DISTRIBUCIÓN POR PROVINCIA
+--------------------------------------------------------------------------------
+EL ORO:
+  • Librerías: 54
+  • Venta mensual: $2,167,800.00 USD
+  • Total reseñas: 1724
+
+GALAPAGOS:
+  • Librerías: 4
+  • Venta mensual: $356,400.00 USD
+  • Total reseñas: 1926
+
+GUAYAS:
+  • Librerías: 2
+  • Venta mensual: $158,400.00 USD
+  • Total reseñas: 411
+
+PICHINCHA:
+  • Librerías: 1
+  • Venta mensual: $58,500.00 USD
+  • Total reseñas: 41
+
+AZUAY:
+  • Librerías: 1
+  • Venta mensual: $15,600.00 USD
+  • Total reseñas: 2
+
+
+🏙️  TOP 10 CANTONES POR VENTAS
+--------------------------------------------------------------------------------
+MACHALA: $905,400.00 USD/mes (29 librerías)
+PASAJE: $572,400.00 USD/mes (14 librerías)
+HUAQUILLAS: $439,800.00 USD/mes (5 librerías)
+SANTA CRUZ: $356,400.00 USD/mes (4 librerías)
+GUAYAQUIL: $158,400.00 USD/mes (2 librerías)
+SANTA ROSA: $148,800.00 USD/mes (3 librerías)
+ARENILLAS: $78,000.00 USD/mes (1 librerías)
+QUITO: $58,500.00 USD/mes (1 librerías)
+PIÑAS: $23,400.00 USD/mes (1 librerías)
+CUENCA: $15,600.00 USD/mes (1 librerías)
+
+
+⭐ TOP 10 LIBRERÍAS POR RESEÑAS
+--------------------------------------------------------------------------------
+1. MUSEO KAYNA KUNAN WIÑAYPASH CAFETERIA NINA CHUMBI
+   Reseñas: 1821 | Calificación: 4.8⭐
+   Venta estimada: $187,200.00 USD/mes
+   Ubicación: SANTA CRUZ
+
+2. IKU
+   Reseñas: 411 | Calificación: 4.4⭐
+   Venta estimada: $158,400.00 USD/mes
+   Ubicación: GUAYAQUIL
+
+3. VIDA LIBRERIA CRISTIANA
+   Reseñas: 198 | Calificación: 4.9⭐
+   Venta estimada: $187,200.00 USD/mes
+   Ubicación: HUAQUILLAS
+
+4. LIBRERIA UNA VIDA CON PROPOSITO
+   Reseñas: 198 | Calificación: 4.9⭐
+   Venta estimada: $187,200.00 USD/mes
+   Ubicación: HUAQUILLAS
+
+5. GENIUSKIDS
+   Reseñas: 149 | Calificación: 4.1⭐
+   Venta estimada: $105,600.00 USD/mes
+   Ubicación: MACHALA
+
+6. LIBRERIA GENESIS
+   Reseñas: 149 | Calificación: 4.1⭐
+   Venta estimada: $105,600.00 USD/mes
+   Ubicación: MACHALA
+
+7. LIBRERIA GENESIS
+   Reseñas: 149 | Calificación: 4.1⭐
+   Venta estimada: $105,600.00 USD/mes
+   Ubicación: MACHALA
+
+8. LIBRERIA GENESIS 
+   Reseñas: 149 | Calificación: 4.1⭐
+   Venta estimada: $105,600.00 USD/mes
+   Ubicación: MACHALA
+
+9. EDICIONES CULTURALES HERMANDAD
+   Reseñas: 119 | Calificación: 4.7⭐
+   Venta estimada: $187,200.00 USD/mes
+   Ubicación: PASAJE
+
+10. GUAMAN CARRION DAYANA LIANABEL
+   Reseñas: 97 | Calificación: 4.4⭐
+   Venta estimada: $66,000.00 USD/mes
+   Ubicación: SANTA ROSA
+
+
+================================================================================
+⚠️  NOTA IMPORTANTE
+--------------------------------------------------------------------------------
+Las estimaciones de ventas están basadas en:
+• Número de reseñas en Google Maps
+• Calificaciones de usuarios
+• Presencia online (sitio web, redes sociales)
+• Estado del contribuyente (ACTIVO/PASIVO/SUSPENDIDO)
+• Ubicación geográfica
+
+Estas son ESTIMACIONES y deben validarse con datos oficiales del SRI
+o información directa de las librerías.
+
+================================================================================
