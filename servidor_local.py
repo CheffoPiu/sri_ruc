@@ -12,7 +12,7 @@ from pathlib import Path
 
 def main():
     """Inicia un servidor HTTP local."""
-    PORT = 8001  # Cambiado a 8001 para evitar conflictos
+    PORT = 8000  # Cambiado a 8001 para evitar conflictos
     
     # Verificar qué archivos de mapa existen
     archivos_mapas = []

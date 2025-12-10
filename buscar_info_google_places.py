@@ -125,45 +125,49 @@ class BuscadorGooglePlaces:
         tiene_web = bool(info_google.get('sitio_web'))
         tiene_fotos = info_google.get('tiene_fotos', False)
         
-        # Determinar tamaño base por reseñas
+        # Determinar tamaño base por reseñas (ajustado para mercado ecuatoriano)
+        # Valores más conservadores considerando el contexto local
         if num_resenas == 0:
-            base_ventas = 5000  # USD/mes
+            base_ventas = 800  # USD/mes (librería muy pequeña)
             confianza = 'baja'
         elif num_resenas < 10:
-            base_ventas = 10000
+            base_ventas = 1500  # Librería pequeña
             confianza = 'baja'
         elif num_resenas < 50:
-            base_ventas = 25000
+            base_ventas = 3500  # Librería mediana
             confianza = 'media'
         elif num_resenas < 100:
-            base_ventas = 50000
+            base_ventas = 6000  # Librería mediana-grande
+            confianza = 'alta'
+        elif num_resenas < 500:
+            base_ventas = 10000  # Librería grande
             confianza = 'alta'
         else:
-            base_ventas = 80000
+            base_ventas = 15000  # Librería muy grande (máximo realista para Ecuador)
             confianza = 'alta'
         
-        # Ajustes por calificación
+        # Ajustes por calificación (más conservadores)
         if calificacion >= 4.5:
-            base_ventas *= 1.3
+            base_ventas *= 1.15  # +15% (antes 30%)
         elif calificacion >= 4.0:
-            base_ventas *= 1.1
+            base_ventas *= 1.05  # +5% (antes 10%)
         elif calificacion < 3.5:
-            base_ventas *= 0.8
+            base_ventas *= 0.9  # -10% (antes -20%)
         
-        # Ajuste por sitio web
+        # Ajuste por sitio web (más conservador)
         if tiene_web:
-            base_ventas *= 1.5
+            base_ventas *= 1.2  # +20% (antes 50%)
             confianza = 'alta' if confianza != 'muy_baja' else 'media'
         
-        # Ajuste por fotos (más fotos = más actividad)
+        # Ajuste por fotos (más conservador)
         if tiene_fotos:
             num_fotos = info_google.get('numero_fotos', 0)
             if num_fotos > 5:
-                base_ventas *= 1.2
+                base_ventas *= 1.1  # +10% (antes 20%)
         
-        # Ajuste por estado del contribuyente
+        # Ajuste por estado del contribuyente (más conservador)
         if registro.get('ESTADO_CONTRIBUYENTE') == 'ACTIVO':
-            base_ventas *= 1.2
+            base_ventas *= 1.1  # +10% (antes 20%)
         elif 'SUSPENDIDO' in str(registro.get('ESTADO_CONTRIBUYENTE', '')):
             base_ventas *= 0.3
         

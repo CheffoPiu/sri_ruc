@@ -390,18 +390,22 @@ class GeneradorMapaFiltrado:
             box-sizing: border-box;
         }}
         
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
         body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
             padding: 0;
             overflow-x: hidden;
+            background: #f5f7fa;
+            color: #2c3e50;
         }}
         
         #header {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             color: white;
-            padding: 15px 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 24px 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -412,15 +416,18 @@ class GeneradorMapaFiltrado:
         }}
         
         #header h1 {{
-            font-size: 20px;
+            font-size: 1.75em;
             margin: 0;
-            margin-right: 20px;
+            margin-right: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }}
         
         #header p {{
-            font-size: 12px;
-            opacity: 0.9;
+            font-size: 0.9em;
+            opacity: 0.95;
             margin: 0;
+            font-weight: 400;
         }}
         
         #map {{
@@ -430,75 +437,96 @@ class GeneradorMapaFiltrado:
         }}
         
         .info-window {{
-            max-width: 300px;
-            max-height: 400px;
+            max-width: 320px;
+            max-height: 450px;
             overflow-y: auto;
+            font-family: 'Inter', sans-serif;
         }}
         
         .info-window h3 {{
-            margin: 0 0 10px 0;
-            color: #333;
-            font-size: 18px;
+            margin: 0 0 12px 0;
+            color: #1e3a8a;
+            font-size: 1.1em;
+            font-weight: 600;
+            letter-spacing: -0.3px;
         }}
         
         .info-window p {{
-            margin: 5px 0;
-            color: #666;
-            font-size: 14px;
+            margin: 6px 0;
+            color: #374151;
+            font-size: 0.9em;
+            line-height: 1.5;
         }}
         
         .info-window hr {{
-            margin: 10px 0;
+            margin: 12px 0;
             border: none;
-            border-top: 1px solid #eee;
+            border-top: 2px solid #e5e7eb;
         }}
         
         .info-window .establecimientos {{
-            margin-top: 10px;
-            font-size: 13px;
+            margin-top: 12px;
+            font-size: 0.85em;
+            color: #6b7280;
+            line-height: 1.6;
         }}
         
         #stats {{
             background: white;
-            padding: 15px 20px;
-            border-top: 1px solid #eee;
+            padding: 24px 32px;
+            border-top: 1px solid #e5e7eb;
             display: flex;
             justify-content: space-around;
             flex-wrap: wrap;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
         }}
         
         .stat-item {{
             text-align: center;
-            margin: 5px 15px;
+            margin: 8px 20px;
+            padding: 16px 24px;
+            background: #f8fafc;
+            border-radius: 8px;
+            min-width: 140px;
+            transition: all 0.3s ease;
+        }}
+        
+        .stat-item:hover {{
+            background: #f1f5f9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }}
         
         .stat-item .number {{
-            font-size: 24px;
-            font-weight: bold;
-            color: #667eea;
+            font-size: 2em;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 4px;
+            font-variant-numeric: tabular-nums;
         }}
         
         .stat-item .label {{
-            font-size: 12px;
-            color: #666;
+            font-size: 0.75em;
+            color: #6b7280;
             text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 500;
         }}
         
         #tabla-detalle {{
             background: white;
             padding: 0;
-            border-top: 3px solid #667eea;
+            border-top: 3px solid #3b82f6;
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.12);
             width: 100%;
         }}
         
         #tabla-detalle.visible {{
             max-height: none;
-            padding: 20px;
+            padding: 32px;
             overflow-y: visible;
         }}
         
@@ -508,31 +536,38 @@ class GeneradorMapaFiltrado:
         }}
         
         #tabla-detalle h3 {{
-            margin: 0 0 15px 0;
-            color: #333;
-            font-size: 18px;
+            margin: 0 0 20px 0;
+            color: #1e3a8a;
+            font-size: 1.5em;
+            font-weight: 600;
+            letter-spacing: -0.3px;
         }}
         
         #tabla-detalle .info-ubicacion {{
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 15px;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3b82f6;
         }}
         
         #tabla-detalle .info-ubicacion p {{
-            margin: 5px 0;
-            color: #666;
+            margin: 6px 0;
+            color: #1e40af;
+            font-size: 0.9em;
         }}
         
         .tabla-establecimientos {{
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 0.9em;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
         }}
         
         .tabla-establecimientos thead {{
-            background: #667eea;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             color: white;
             position: sticky;
             top: 0;
@@ -540,65 +575,81 @@ class GeneradorMapaFiltrado:
         }}
         
         .tabla-establecimientos th {{
-            padding: 12px;
+            padding: 14px 16px;
             text-align: left;
             font-weight: 600;
+            font-size: 0.875em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }}
         
         .tabla-establecimientos td {{
-            padding: 10px 12px;
-            border-bottom: 1px solid #eee;
+            padding: 14px 16px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #374151;
         }}
         
         .tabla-establecimientos tbody tr:hover {{
-            background: #f9f9f9;
+            background: #f8fafc;
         }}
         
         .tabla-establecimientos tbody tr:nth-child(even) {{
-            background: #fafafa;
+            background: #fafbfc;
+        }}
+        
+        .tabla-establecimientos tbody tr:nth-child(even):hover {{
+            background: #f1f5f9;
         }}
         
         .cerrar-tabla {{
             float: right;
-            background: #dc3545;
+            background: #ef4444;
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 10px 20px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
-            margin-bottom: 15px;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }}
         
         .cerrar-tabla:hover {{
-            background: #c82333;
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(239,68,68,0.3);
         }}
         
         .tabla-header {{
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #eee;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e5e7eb;
         }}
         
         .tabla-header h3 {{
             margin: 0;
-            color: #333;
-            font-size: 18px;
+            color: #1e3a8a;
+            font-size: 1.5em;
+            font-weight: 600;
+            letter-spacing: -0.3px;
         }}
         
         .filtro-estado-tabla {{
-            margin-bottom: 15px;
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 5px;
-            border: 1px solid #dee2e6;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
         }}
         
         .filtro-estado-tabla h4 {{
-            margin: 0 0 10px 0;
-            font-size: 14px;
-            color: #495057;
+            margin: 0 0 12px 0;
+            font-size: 0.95em;
+            color: #1e3a8a;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }}
         
         .filtro-estado-opciones {{
@@ -611,18 +662,20 @@ class GeneradorMapaFiltrado:
         .checkbox-estado-tabla {{
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
+            gap: 8px;
+            padding: 8px 16px;
             background: white;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }}
         
         .checkbox-estado-tabla:hover {{
-            border-color: #667eea;
-            background: #f0f4ff;
+            border-color: #3b82f6;
+            background: #eff6ff;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(59,130,246,0.2);
         }}
         
         .checkbox-estado-tabla input[type="checkbox"] {{
@@ -653,66 +706,72 @@ class GeneradorMapaFiltrado:
         }}
         
         #filtros {{
-            background: white;
-            padding: 10px 20px;
-            border-bottom: 1px solid #eee;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 16px;
         }}
         
         .filtro-izquierda {{
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
             flex-wrap: wrap;
         }}
         
         .filtro-izquierda h3 {{
             margin: 0;
-            font-size: 14px;
-            color: #333;
+            font-size: 0.875em;
+            color: rgba(255,255,255,0.95);
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }}
         
         .filtro-provincias {{
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
         }}
         
         .checkbox-provincia {{
             display: flex;
             align-items: center;
-            padding: 6px 12px;
-            background: #f5f5f5;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
             border-radius: 20px;
             cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.3);
         }}
         
         .checkbox-provincia:hover {{
-            background: #e8e8e8;
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-1px);
         }}
         
         .checkbox-provincia input[type="checkbox"] {{
-            margin-right: 6px;
+            margin-right: 8px;
             cursor: pointer;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
         }}
         
         .checkbox-provincia label {{
             cursor: pointer;
-            font-size: 13px;
-            color: #333;
+            font-size: 0.875em;
+            color: white;
             margin: 0;
             line-height: 1.4;
+            font-weight: 500;
         }}
         
         .checkbox-provincia label strong {{
@@ -723,42 +782,47 @@ class GeneradorMapaFiltrado:
         .checkbox-provincia label span {{
             display: block;
             font-weight: normal;
-            font-size: 11px;
+            font-size: 0.75em;
+            opacity: 0.9;
         }}
         
         .checkbox-provincia.activa {{
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
+            background: rgba(255,255,255,0.95);
+            color: #1e3a8a;
+            border-color: rgba(255,255,255,0.95);
         }}
         
         .checkbox-provincia.activa label {{
-            color: white;
+            color: #1e3a8a;
+            font-weight: 600;
         }}
         
         .botones-filtro {{
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }}
         
         .btn-filtro {{
-            padding: 6px 15px;
-            background: #667eea;
+            padding: 8px 18px;
+            background: rgba(255,255,255,0.2);
             color: white;
-            border: none;
-            border-radius: 5px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 12px;
-            transition: background 0.3s;
+            font-size: 0.85em;
+            font-weight: 500;
+            transition: all 0.2s ease;
             white-space: nowrap;
         }}
         
         .btn-filtro:hover {{
-            background: #5568d3;
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-1px);
         }}
         
         .btn-filtro:active {{
-            background: #4457c2;
+            transform: translateY(0);
         }}
     </style>
 </head>
