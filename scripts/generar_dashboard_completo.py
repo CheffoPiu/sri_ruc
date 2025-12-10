@@ -711,7 +711,7 @@ def generar_dashboard_completo():
                     El mapa muestra la ubicación geográfica de todas las librerías encontradas. 
                     Puedes hacer zoom, hacer clic en los marcadores para ver detalles, y filtrar por provincia o código CIIU.
                 </p>
-                <a href="../output/html/mapa_google_maps_filtrado.html" target="_blank" 
+                <a href="mapa_google_maps_filtrado.html" target="_blank" 
                    style="display: inline-block; background: #2196F3; color: white; padding: 12px 25px; 
                           border-radius: 5px; text-decoration: none; font-weight: 600; margin-top: 10px;">
                     🗺️ Abrir Mapa Interactivo
@@ -719,12 +719,12 @@ def generar_dashboard_completo():
             </div>
             
             <div style="background: white; border: 2px dashed #ddd; padding: 40px; text-align: center; border-radius: 10px;">
-                <iframe src="../output/html/mapa_google_maps_filtrado.html" 
+                <iframe src="mapa_google_maps_filtrado.html" 
                         style="width: 100%; height: 600px; border: none; border-radius: 10px;"
                         title="Mapa de Librerías">
                 </iframe>
                 <p style="margin-top: 15px; color: #666; font-size: 0.9em;">
-                    Si el mapa no se carga, <a href="../output/html/mapa_google_maps_filtrado.html" target="_blank">haz clic aquí para abrirlo en una nueva pestaña</a>
+                    Si el mapa no se carga, <a href="mapa_google_maps_filtrado.html" target="_blank">haz clic aquí para abrirlo en una nueva pestaña</a>
                 </p>
             </div>
             
