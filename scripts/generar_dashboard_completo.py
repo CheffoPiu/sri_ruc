@@ -19,6 +19,28 @@ def generar_dashboard_completo():
     
     df = pd.read_excel(archivo)
     
+    # Numerar sucursales del mismo RUC (en lugar de eliminarlas)
+    # Agregar número de sucursal para identificar múltiples establecimientos
+    df['NUMERO_SUCURSAL'] = df.groupby('NUMERO_RUC').cumcount() + 1
+    df['TOTAL_SUCURSALES'] = df.groupby('NUMERO_RUC')['NUMERO_RUC'].transform('count')
+    
+    # Crear identificador de sucursal para mostrar en el dashboard
+    def crear_identificador_sucursal(row):
+        if row['TOTAL_SUCURSALES'] > 1:
+            # Si hay múltiples sucursales, mostrar el número
+            if 'NUMERO_ESTABLECIMIENTO' in row and pd.notna(row.get('NUMERO_ESTABLECIMIENTO')):
+                return f"Est. {str(row['NUMERO_ESTABLECIMIENTO']).zfill(3)}"
+            else:
+                return f"Sucursal #{int(row['NUMERO_SUCURSAL'])}"
+        return ""
+    
+    df['IDENTIFICADOR_SUCURSAL'] = df.apply(crear_identificador_sucursal, axis=1)
+    
+    # Mostrar estadísticas de sucursales
+    rucs_con_sucursales = df[df['TOTAL_SUCURSALES'] > 1]['NUMERO_RUC'].nunique()
+    if rucs_con_sucursales > 0:
+        print(f"✅ {rucs_con_sucursales} RUCs con múltiples sucursales (total {len(df)} establecimientos)")
+    
     # Filtrar por códigos CIIU (G476101 y G476104)
     codigos_ciiu_filtro = ['G476101', 'G476104']
     df = df[df['CODIGO_CIIU'].isin(codigos_ciiu_filtro)]
@@ -55,12 +77,12 @@ def generar_dashboard_completo():
     
     top_10 = df.nlargest(10, 'NUMERO_RESENAS')[
         ['RAZON_SOCIAL', 'NOMBRE_FANTASIA_COMERCIAL', 'NUMERO_RESENAS',
-         'CALIFICACION_GOOGLE', 'ESTIMACION_VENTA_MENSUAL', 'DESCRIPCION_CANTON_EST', 'URL_GOOGLE_MAPS']
+         'CALIFICACION_GOOGLE', 'ESTIMACION_VENTA_MENSUAL', 'DESCRIPCION_CANTON_EST', 'URL_GOOGLE_MAPS', 'IDENTIFICADOR_SUCURSAL']
     ]
     
     top_20_ventas = df.nlargest(20, 'ESTIMACION_VENTA_MENSUAL')[
         ['RAZON_SOCIAL', 'NOMBRE_FANTASIA_COMERCIAL', 'NUMERO_RESENAS',
-         'CALIFICACION_GOOGLE', 'ESTIMACION_VENTA_MENSUAL', 'DESCRIPCION_CANTON_EST', 'URL_GOOGLE_MAPS']
+         'CALIFICACION_GOOGLE', 'ESTIMACION_VENTA_MENSUAL', 'DESCRIPCION_CANTON_EST', 'URL_GOOGLE_MAPS', 'IDENTIFICADOR_SUCURSAL']
     ]
     
     # Preparar datos para JavaScript
@@ -76,8 +98,10 @@ def generar_dashboard_completo():
     top_10_data = []
     for _, row in top_10.iterrows():
         nombre = row['NOMBRE_FANTASIA_COMERCIAL'] if pd.notna(row['NOMBRE_FANTASIA_COMERCIAL']) else row['RAZON_SOCIAL']
+        identificador = str(row.get('IDENTIFICADOR_SUCURSAL', '')) if pd.notna(row.get('IDENTIFICADOR_SUCURSAL')) else ''
+        nombre_completo = f"{nombre} ({identificador})" if identificador else str(nombre)
         top_10_data.append({
-            'nombre': str(nombre)[:60],
+            'nombre': nombre_completo[:60],
             'resenas': int(float(row['NUMERO_RESENAS'])),
             'calificacion': float(round(row['CALIFICACION_GOOGLE'], 1)),
             'venta_mensual': float(round(row['ESTIMACION_VENTA_MENSUAL'], 2)),
@@ -88,8 +112,10 @@ def generar_dashboard_completo():
     top_20_ventas_data = []
     for _, row in top_20_ventas.iterrows():
         nombre = row['NOMBRE_FANTASIA_COMERCIAL'] if pd.notna(row['NOMBRE_FANTASIA_COMERCIAL']) else row['RAZON_SOCIAL']
+        identificador = str(row.get('IDENTIFICADOR_SUCURSAL', '')) if pd.notna(row.get('IDENTIFICADOR_SUCURSAL')) else ''
+        nombre_completo = f"{nombre} ({identificador})" if identificador else str(nombre)
         top_20_ventas_data.append({
-            'nombre': str(nombre)[:60],
+            'nombre': nombre_completo[:60],
             'resenas': int(float(row['NUMERO_RESENAS'])),
             'calificacion': float(round(row['CALIFICACION_GOOGLE'], 1)),
             'venta_mensual': float(round(row['ESTIMACION_VENTA_MENSUAL'], 2)),
@@ -106,11 +132,12 @@ def generar_dashboard_completo():
     }
     
     # Datos para tabla completa
-    todas_librerias = df[[
+    columnas_tabla = [
         'NUMERO_RUC', 'RAZON_SOCIAL', 'NOMBRE_FANTASIA_COMERCIAL',
         'DESCRIPCION_CANTON_EST', 'NUMERO_RESENAS', 'CALIFICACION_GOOGLE',
-        'ESTIMACION_VENTA_MENSUAL', 'SITIO_WEB', 'URL_GOOGLE_MAPS'
-    ]].sort_values('ESTIMACION_VENTA_MENSUAL', ascending=False)
+        'ESTIMACION_VENTA_MENSUAL', 'SITIO_WEB', 'URL_GOOGLE_MAPS', 'IDENTIFICADOR_SUCURSAL'
+    ]
+    todas_librerias = df[columnas_tabla].sort_values('ESTIMACION_VENTA_MENSUAL', ascending=False)
     
     # Cargar datos de libros si existen
     estadisticas_libros = {}
@@ -147,9 +174,17 @@ def generar_dashboard_completo():
     todas_librerias_data = []
     for _, row in todas_librerias.iterrows():
         nombre = row['NOMBRE_FANTASIA_COMERCIAL'] if pd.notna(row['NOMBRE_FANTASIA_COMERCIAL']) else row['RAZON_SOCIAL']
+        identificador = str(row.get('IDENTIFICADOR_SUCURSAL', '')) if pd.notna(row.get('IDENTIFICADOR_SUCURSAL')) else ''
+        
+        # Agregar identificador de sucursal al nombre si existe
+        if identificador:
+            nombre_completo = f"{nombre} ({identificador})"
+        else:
+            nombre_completo = str(nombre)
+        
         todas_librerias_data.append({
             'ruc': str(row['NUMERO_RUC']),
-            'nombre': str(nombre),
+            'nombre': nombre_completo,
             'canton': str(row['DESCRIPCION_CANTON_EST']),
             'resenas': int(float(row['NUMERO_RESENAS'])) if pd.notna(row['NUMERO_RESENAS']) else 0,
             'calificacion': float(round(row['CALIFICACION_GOOGLE'], 1)) if pd.notna(row['CALIFICACION_GOOGLE']) else 0,
