@@ -9,7 +9,7 @@ from buscar_info_google_places import BuscadorGooglePlaces
 def recalcular_estimaciones():
     """Recalcula estimaciones con valores ajustados para Ecuador."""
     
-    archivo = "librerias_con_info_google.xlsx"
+    archivo = "../data/output/librerias_con_info_google.xlsx"
     if not os.path.exists(archivo):
         print(f"❌ No se encontró: {archivo}")
         return
@@ -20,8 +20,8 @@ def recalcular_estimaciones():
     
     # Cargar API key (aunque no la usaremos, necesitamos la clase)
     google_api_key = None
-    if os.path.exists('google_maps_api_key.txt'):
-        with open('google_maps_api_key.txt', 'r') as f:
+    if os.path.exists('../config/google_maps_api_key.txt'):
+        with open('../config/google_maps_api_key.txt', 'r') as f:
             google_api_key = f.read().strip()
     
     buscador = BuscadorGooglePlaces(google_api_key)
@@ -50,7 +50,7 @@ def recalcular_estimaciones():
     df['RAZON_ESTIMACION'] = [e['razon'] for e in estimaciones_nuevas]
     
     # Guardar
-    archivo_salida = "librerias_con_info_google.xlsx"
+    archivo_salida = "../data/output/librerias_con_info_google.xlsx"
     df.to_excel(archivo_salida, index=False)
     
     # Estadísticas

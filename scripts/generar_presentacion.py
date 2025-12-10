@@ -11,7 +11,7 @@ def generar_resumen_ejecutivo():
     """Genera un resumen ejecutivo en formato texto y HTML."""
     
     # Cargar datos
-    archivo = "librerias_con_info_google.xlsx"
+    archivo = "../data/output/librerias_con_info_google.xlsx"
     if not os.path.exists(archivo):
         print(f"❌ No se encontró: {archivo}")
         return
@@ -143,7 +143,7 @@ o información directa de las librerías.
 def generar_tablas_resumen():
     """Genera tablas resumen en Excel para presentación."""
     
-    archivo = "librerias_con_info_google.xlsx"
+    archivo = "../data/output/librerias_con_info_google.xlsx"
     if not os.path.exists(archivo):
         print(f"❌ No se encontró: {archivo}")
         return

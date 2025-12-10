@@ -9,7 +9,7 @@ def generar_lista_consulta_sri():
     """Genera una lista de librerías activas para consultar en el SRI."""
     
     # Cargar datos
-    df = pd.read_excel('librerias_detalle.xlsx')
+    df = pd.read_excel('../data/output/librerias_detalle.xlsx')
     
     # Filtrar solo activas
     activas = df[df['ESTADO_CONTRIBUYENTE'] == 'ACTIVO'].copy()

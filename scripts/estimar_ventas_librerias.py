@@ -161,7 +161,7 @@ def main():
     print("="*70)
     
     # Cargar datos de librerías
-    archivo_librerias = "librerias_detalle.xlsx"
+    archivo_librerias = "../data/output/librerias_detalle.xlsx"
     
     if not os.path.exists(archivo_librerias):
         print(f"\n❌ No se encontró el archivo: {archivo_librerias}")

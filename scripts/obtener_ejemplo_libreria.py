@@ -1,7 +1,7 @@
 """Script rápido para obtener ejemplos de librerías activas"""
 import pandas as pd
 
-df = pd.read_excel('librerias_detalle.xlsx')
+df = pd.read_excel('../data/output/librerias_detalle.xlsx')
 activas = df[df['ESTADO_CONTRIBUYENTE'] == 'ACTIVO'].head(5)
 
 print('='*70)

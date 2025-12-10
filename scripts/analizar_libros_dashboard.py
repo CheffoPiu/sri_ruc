@@ -19,7 +19,7 @@ def analizar_libros_para_dashboard():
     
     # Cargar datos
     archivos = {
-        'libros_encontrados': 'libros_encontrados_librerias.xlsx',
+        'libros_encontrados': '../data/output/libros_encontrados_librerias.xlsx',
         'libros_populares': 'libros_populares_ecuador.xlsx',
         'resumen_librerias': 'resumen_analisis_libros_librerias.xlsx'
     }
@@ -105,7 +105,7 @@ def analizar_libros_para_dashboard():
         estadisticas['librerias_con_info_libros'] = len(librerias_con_libros)
     
     # Guardar estadísticas en JSON para el dashboard
-    archivo_json = "estadisticas_libros.json"
+    archivo_json = "../data/output/estadisticas_libros.json"
     with open(archivo_json, 'w', encoding='utf-8') as f:
         json.dump(estadisticas, f, ensure_ascii=False, indent=2)
     

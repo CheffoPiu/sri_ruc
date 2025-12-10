@@ -12,7 +12,7 @@ def generar_dashboard_completo():
     """Genera un dashboard HTML completo con menú y pestañas."""
     
     # Cargar datos
-    archivo = "librerias_con_info_google.xlsx"
+    archivo = "../data/output/librerias_con_info_google.xlsx"
     if not os.path.exists(archivo):
         print(f"❌ No se encontró: {archivo}")
         return
@@ -115,13 +115,13 @@ def generar_dashboard_completo():
     # Cargar datos de libros si existen
     estadisticas_libros = {}
     libros_data = []
-    if os.path.exists('estadisticas_libros.json'):
-        with open('estadisticas_libros.json', 'r', encoding='utf-8') as f:
+    if os.path.exists('../data/output/estadisticas_libros.json'):
+        with open('../data/output/estadisticas_libros.json', 'r', encoding='utf-8') as f:
             estadisticas_libros = json.load(f)
         print("✅ Datos de libros cargados")
     
-    if os.path.exists('libros_encontrados_librerias.xlsx'):
-        df_libros = pd.read_excel('libros_encontrados_librerias.xlsx')
+    if os.path.exists('../data/output/libros_encontrados_librerias.xlsx'):
+        df_libros = pd.read_excel('../data/output/libros_encontrados_librerias.xlsx')
         for _, row in df_libros.iterrows():
             precio = row.get('precio')
             if pd.notna(precio) and precio is not None:
@@ -711,7 +711,7 @@ def generar_dashboard_completo():
                     El mapa muestra la ubicación geográfica de todas las librerías encontradas. 
                     Puedes hacer zoom, hacer clic en los marcadores para ver detalles, y filtrar por provincia o código CIIU.
                 </p>
-                <a href="mapa_google_maps_filtrado.html" target="_blank" 
+                <a href="../output/html/mapa_google_maps_filtrado.html" target="_blank" 
                    style="display: inline-block; background: #2196F3; color: white; padding: 12px 25px; 
                           border-radius: 5px; text-decoration: none; font-weight: 600; margin-top: 10px;">
                     🗺️ Abrir Mapa Interactivo
@@ -719,12 +719,12 @@ def generar_dashboard_completo():
             </div>
             
             <div style="background: white; border: 2px dashed #ddd; padding: 40px; text-align: center; border-radius: 10px;">
-                <iframe src="mapa_google_maps_filtrado.html" 
+                <iframe src="../output/html/mapa_google_maps_filtrado.html" 
                         style="width: 100%; height: 600px; border: none; border-radius: 10px;"
                         title="Mapa de Librerías">
                 </iframe>
                 <p style="margin-top: 15px; color: #666; font-size: 0.9em;">
-                    Si el mapa no se carga, <a href="mapa_google_maps_filtrado.html" target="_blank">haz clic aquí para abrirlo en una nueva pestaña</a>
+                    Si el mapa no se carga, <a href="../output/html/mapa_google_maps_filtrado.html" target="_blank">haz clic aquí para abrirlo en una nueva pestaña</a>
                 </p>
             </div>
             
@@ -1915,7 +1915,7 @@ def generar_dashboard_completo():
 """
     
     # Guardar archivo
-    archivo_salida = "dashboard_completo.html"
+    archivo_salida = "../output/html/dashboard_completo.html"
     with open(archivo_salida, 'w', encoding='utf-8') as f:
         f.write(html)
     

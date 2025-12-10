@@ -23,8 +23,8 @@ def main():
     print()
     
     # Verificar si ya existe
-    if os.path.exists('google_maps_api_key.txt'):
-        print("⚠️  Ya existe un archivo 'google_maps_api_key.txt'")
+    if os.path.exists('../config/google_maps_api_key.txt'):
+        print("⚠️  Ya existe un archivo '../config/google_maps_api_key.txt'")
         respuesta = input("¿Deseas sobrescribirlo? (s/n): ").lower()
         if respuesta != 's':
             print("Operación cancelada.")
@@ -50,14 +50,14 @@ def main():
     
     # Guardar en archivo
     try:
-        with open('google_maps_api_key.txt', 'w') as f:
+        with open('../config/google_maps_api_key.txt', 'w') as f:
             f.write(api_key)
         
         # Establecer permisos restrictivos (solo lectura para el dueño)
-        os.chmod('google_maps_api_key.txt', 0o600)
+        os.chmod('../config/google_maps_api_key.txt', 0o600)
         
         print()
-        print("✅ API key guardada exitosamente en 'google_maps_api_key.txt'")
+        print("✅ API key guardada exitosamente en '../config/google_maps_api_key.txt'")
         print("   El archivo tiene permisos restrictivos para mayor seguridad.")
         print()
         print("Ahora puedes ejecutar:")

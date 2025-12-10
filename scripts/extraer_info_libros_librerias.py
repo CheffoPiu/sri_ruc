@@ -275,7 +275,7 @@ def main():
     print()
     
     # Cargar datos de librerías
-    archivo = "librerias_con_info_google.xlsx"
+    archivo = "../data/output/librerias_con_info_google.xlsx"
     if not os.path.exists(archivo):
         print(f"❌ No se encontró: {archivo}")
         return
@@ -364,7 +364,7 @@ def main():
     
     # 2. Libros encontrados
     if not df_libros_encontrados.empty:
-        archivo_libros = "libros_encontrados_librerias.xlsx"
+        archivo_libros = "../data/output/libros_encontrados_librerias.xlsx"
         df_libros_encontrados.to_excel(archivo_libros, index=False)
         print(f"   ✅ {archivo_libros}")
     

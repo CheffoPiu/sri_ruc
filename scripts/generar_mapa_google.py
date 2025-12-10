@@ -135,7 +135,7 @@ class GeneradorMapaGoogle:
             print(f"❌ Error: {str(e)}")
             return []
     
-    def generar_html_google_maps(self, ubicaciones: List[Dict], archivo_salida: str = "mapa_google_maps.html"):
+    def generar_html_google_maps(self, ubicaciones: List[Dict], archivo_salida: str = "../output/html/mapa_google_maps.html"):
         """Genera HTML con Google Maps JavaScript API."""
         ubicaciones_validas = [u for u in ubicaciones if u.get('latitud') and u.get('longitud')]
         
@@ -145,7 +145,7 @@ class GeneradorMapaGoogle:
         
         if not self.google_api_key:
             print("❌ Se requiere API key de Google Maps para generar el mapa.")
-            print("   Configura tu API key en 'google_maps_api_key.txt' o como variable de entorno.")
+            print("   Configura tu API key en '../config/google_maps_api_key.txt' o como variable de entorno.")
             return
         
         print(f"\n🗺️  Generando mapa Google Maps con {len(ubicaciones_validas)} ubicaciones...")
@@ -394,8 +394,8 @@ def main():
     # Obtener API key
     google_api_key = None
     
-    if os.path.exists('google_maps_api_key.txt'):
-        with open('google_maps_api_key.txt', 'r') as f:
+    if os.path.exists('../config/google_maps_api_key.txt'):
+        with open('../config/google_maps_api_key.txt', 'r') as f:
             google_api_key = f.read().strip()
     
     if not google_api_key:
@@ -403,7 +403,7 @@ def main():
     
     if not google_api_key:
         print("❌ No se encontró API key de Google Maps.")
-        print("   Crea el archivo 'google_maps_api_key.txt' con tu API key")
+        print("   Crea el archivo '../config/google_maps_api_key.txt' con tu API key")
         print("   O ejecuta: python3 configurar_api_key.py")
         return
     
@@ -431,7 +431,7 @@ def main():
         todas_ubicaciones.extend(ubicaciones)
     
     if todas_ubicaciones:
-        generador.generar_html_google_maps(todas_ubicaciones, "mapa_google_maps.html")
+        generador.generar_html_google_maps(todas_ubicaciones, "../output/html/mapa_google_maps.html")
         
         print(f"\n{'='*60}")
         print("✅ PROCESO COMPLETADO")
@@ -439,7 +439,7 @@ def main():
         ubicaciones_con_coords = [u for u in todas_ubicaciones if u.get('latitud')]
         print(f"📍 Ubicaciones: {len(ubicaciones_con_coords)}/{len(todas_ubicaciones)}")
         print(f"📊 Total establecimientos: {sum(u['cantidad'] for u in todas_ubicaciones):,}")
-        print(f"\n🌐 Abre 'mapa_google_maps.html' en tu navegador")
+        print(f"\n🌐 Abre '../output/html/mapa_google_maps.html' en tu navegador")
     else:
         print("❌ No se procesaron ubicaciones")
 

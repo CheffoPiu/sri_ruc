@@ -187,13 +187,13 @@ def procesar_librerias_con_google():
     
     # Cargar API key
     google_api_key = None
-    if os.path.exists('google_maps_api_key.txt'):
-        with open('google_maps_api_key.txt', 'r') as f:
+    if os.path.exists('../config/google_maps_api_key.txt'):
+        with open('../config/google_maps_api_key.txt', 'r') as f:
             google_api_key = f.read().strip()
     
     if not google_api_key:
         print("\n❌ No se encontró API key de Google Maps")
-        print("   Asegúrate de tener el archivo 'google_maps_api_key.txt'")
+        print("   Asegúrate de tener el archivo '../config/google_maps_api_key.txt'")
         print("   Y que la API key tenga habilitada 'Places API'")
         return
     
@@ -204,7 +204,7 @@ def procesar_librerias_con_google():
         return
     
     # Cargar datos
-    archivo = "librerias_detalle.xlsx"
+    archivo = "../data/output/librerias_detalle.xlsx"
     if not os.path.exists(archivo):
         print(f"\n❌ No se encontró: {archivo}")
         return
@@ -293,7 +293,7 @@ def procesar_librerias_con_google():
     activas = activas.sort_values('ESTIMACION_VENTA_MENSUAL', ascending=False)
     
     # Exportar
-    archivo_salida = "librerias_con_info_google.xlsx"
+    archivo_salida = "../data/output/librerias_con_info_google.xlsx"
     activas.to_excel(archivo_salida, index=False)
     
     # Mostrar resumen

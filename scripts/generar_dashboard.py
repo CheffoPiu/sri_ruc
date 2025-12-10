@@ -12,7 +12,7 @@ def generar_dashboard_html():
     """Genera un dashboard HTML interactivo con gráficos."""
     
     # Cargar datos
-    archivo = "librerias_con_info_google.xlsx"
+    archivo = "../data/output/librerias_con_info_google.xlsx"
     if not os.path.exists(archivo):
         print(f"❌ No se encontró: {archivo}")
         return

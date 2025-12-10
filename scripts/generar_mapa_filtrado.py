@@ -229,7 +229,7 @@ class GeneradorMapaFiltrado:
         
         return ubicaciones
     
-    def generar_html_google_maps(self, ubicaciones: List[Dict], archivo_salida: str = "mapa_google_maps_filtrado.html"):
+    def generar_html_google_maps(self, ubicaciones: List[Dict], archivo_salida: str = "../output/html/mapa_google_maps_filtrado.html"):
         """Genera HTML con Google Maps JavaScript API."""
         ubicaciones_validas = [u for u in ubicaciones if u.get('latitud') and u.get('longitud')]
         
@@ -1422,8 +1422,8 @@ def main():
     # Obtener API key
     google_api_key = None
     
-    if os.path.exists('google_maps_api_key.txt'):
-        with open('google_maps_api_key.txt', 'r') as f:
+    if os.path.exists('../config/google_maps_api_key.txt'):
+        with open('../config/google_maps_api_key.txt', 'r') as f:
             google_api_key = f.read().strip()
     
     if not google_api_key:
@@ -1431,7 +1431,7 @@ def main():
     
     if not google_api_key:
         print("\n❌ No se encontró API key de Google Maps.")
-        print("   Crea el archivo 'google_maps_api_key.txt' con tu API key")
+        print("   Crea el archivo '../config/google_maps_api_key.txt' con tu API key")
         return
     
     directorio_datos = "datos_excel"
@@ -1497,7 +1497,7 @@ def main():
         generador.codigos_ciiu = CODIGOS_CIIU if CODIGOS_CIIU else []
         generador.provincias = PROVINCIAS_A_VISUALIZAR if PROVINCIAS_A_VISUALIZAR else []
         
-        generador.generar_html_google_maps(todas_ubicaciones, "mapa_google_maps_filtrado.html")
+        generador.generar_html_google_maps(todas_ubicaciones, "../output/html/mapa_google_maps_filtrado.html")
         
         print(f"\n{'='*60}")
         print("✅ PROCESO COMPLETADO")
@@ -1505,7 +1505,7 @@ def main():
         ubicaciones_con_coords = [u for u in todas_ubicaciones if u.get('latitud')]
         print(f"📍 Ubicaciones: {len(ubicaciones_con_coords)}/{len(todas_ubicaciones)}")
         print(f"📊 Total establecimientos filtrados: {sum(u['cantidad'] for u in todas_ubicaciones):,}")
-        print(f"\n🌐 Abre 'mapa_google_maps_filtrado.html' en tu navegador")
+        print(f"\n🌐 Abre '../output/html/mapa_google_maps_filtrado.html' en tu navegador")
     else:
         print("\n❌ No se encontraron establecimientos con los códigos CIIU especificados")
 

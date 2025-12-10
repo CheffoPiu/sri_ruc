@@ -197,7 +197,7 @@ def main():
     print("="*70)
     
     # Cargar datos
-    archivo = "librerias_detalle.xlsx"
+    archivo = "../data/output/librerias_detalle.xlsx"
     if not os.path.exists(archivo):
         print(f"\n❌ No se encontró: {archivo}")
         print("   Ejecuta primero: python3 analizar_librerias.py")

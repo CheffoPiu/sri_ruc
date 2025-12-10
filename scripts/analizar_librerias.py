@@ -292,7 +292,7 @@ class AnalizadorLibrerias:
         print(f"✅ Reporte guardado en: {archivo_salida}")
         print("="*70)
     
-    def exportar_datos_librerias(self, df: pd.DataFrame, archivo_salida: str = "librerias_detalle.xlsx"):
+    def exportar_datos_librerias(self, df: pd.DataFrame, archivo_salida: str = "../data/output/librerias_detalle.xlsx"):
         """Exporta los datos de librerías a Excel para análisis adicional."""
         if df.empty:
             print("❌ No hay datos para exportar")
